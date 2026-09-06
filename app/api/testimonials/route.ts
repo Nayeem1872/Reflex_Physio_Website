@@ -6,7 +6,17 @@ import { verifyAuth, unauthorizedResponse } from '@/lib/utils/auth';
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
-        const testimonials = await Testimonial.find().sort({ createdAt: -1 });
+        const { searchParams } = new URL(request.url);
+        const showAll = searchParams.get("all") === "true";
+
+        // Public requests only get published testimonials; ?all=true requires auth
+        if (showAll) {
+            const authUser = verifyAuth(request);
+            if (!authUser) return unauthorizedResponse();
+        }
+
+        const filter = showAll ? {} : { published: true };
+        const testimonials = await Testimonial.find(filter).sort({ createdAt: -1 });
         return Response.json({ count: testimonials.length, testimonials });
     } catch (error: any) {
         return Response.json({ message: 'Error fetching testimonials', error: error.message }, { status: 500 });

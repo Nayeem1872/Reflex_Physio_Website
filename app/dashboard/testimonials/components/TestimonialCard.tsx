@@ -12,7 +12,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { BACKEND_URL } from "@/lib/config";
+import { BACKEND_URL, getMediaUrl } from "@/lib/config";
 
 interface Testimonial {
   _id: string;
@@ -93,6 +93,8 @@ export default function TestimonialCard({
 }: TestimonialCardProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [bannerFailed, setBannerFailed] = useState(false);
+  const [profileFailed, setProfileFailed] = useState(false);
 
   const handleDeleteConfirm = async () => {
     setIsDeleting(true);
@@ -137,20 +139,22 @@ export default function TestimonialCard({
           <div className="relative w-full h-48 bg-gradient-to-r from-[#2e3192] to-[#4c46a3]">
             {testimonial.bannerMediaType === "video" ? (
               <video
-                src={`${BACKEND_URL}${testimonial.bannerMedia}`}
+                src={getMediaUrl(testimonial.bannerMedia)}
                 className="w-full h-full object-cover"
                 muted
                 loop
                 autoPlay
+                onError={() => setBannerFailed(true)}
               />
-            ) : (
+            ) : !bannerFailed ? (
               <Image
-                src={`${BACKEND_URL}${testimonial.bannerMedia}`}
+                src={getMediaUrl(testimonial.bannerMedia)}
                 alt="Banner"
                 fill
                 className="object-cover"
+                onError={() => setBannerFailed(true)}
               />
-            )}
+            ) : null}
           </div>
         )}
 
@@ -168,18 +172,24 @@ export default function TestimonialCard({
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-r from-[#2e3192] to-[#4c46a3]">
-                {testimonial.mediaType === "video" ? (
+                {profileFailed ? (
+                  <div className="w-full h-full flex items-center justify-center text-white font-bold text-base">
+                    {testimonial.fullName.charAt(0).toUpperCase()}
+                  </div>
+                ) : testimonial.mediaType === "video" ? (
                   <video
-                    src={`${BACKEND_URL}${testimonial.profileMedia}`}
+                    src={getMediaUrl(testimonial.profileMedia)}
                     className="w-full h-full object-cover"
                     muted
+                    onError={() => setProfileFailed(true)}
                   />
                 ) : (
                   <Image
-                    src={`${BACKEND_URL}${testimonial.profileMedia}`}
+                    src={getMediaUrl(testimonial.profileMedia)}
                     alt={testimonial.fullName}
                     fill
                     className="object-cover"
+                    onError={() => setProfileFailed(true)}
                   />
                 )}
               </div>

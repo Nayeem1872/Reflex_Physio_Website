@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DashboardSidebar from "../components/DashboardSidebar";
 import DashboardNavbar from "../components/DashboardNavbar";
-import { Plus, Quote, CheckCircle, Clock, Star } from "lucide-react";
+import { Plus, Quote, CheckCircle, Clock, Star, RefreshCw } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import TestimonialsList, {
   getAllTestimonialsAPI,
@@ -40,6 +40,7 @@ export default function TestimonialsPage() {
     "all" | "published" | "unpublished"
   >("all");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
     published: 0,
@@ -78,6 +79,13 @@ export default function TestimonialsPage() {
   const handleEdit = (testimonial: Testimonial) => {
     setEditingTestimonial(testimonial);
     setIsFormOpen(true);
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setRefreshTrigger((prev) => prev + 1);
+    // Reset refreshing state after stats fetch settles
+    setTimeout(() => setIsRefreshing(false), 600);
   };
 
   const handleSuccess = () => {
@@ -136,15 +144,30 @@ export default function TestimonialsPage() {
                 Manage patient reviews and testimonials
               </p>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsFormOpen(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2e3192] to-[#4c46a3] text-white rounded-xl shadow-lg hover:shadow-xl transition-all"
-            >
-              <Plus className="h-5 w-5" />
-              Add Testimonial
-            </motion.button>
+            <div className="flex items-center gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="flex items-center gap-2 px-4 py-3 bg-white text-gray-700 border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 hover:shadow transition-all disabled:opacity-50"
+                title="Refresh testimonials"
+              >
+                <RefreshCw
+                  className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`}
+                />
+                Refresh
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsFormOpen(true)}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2e3192] to-[#4c46a3] text-white rounded-xl shadow-lg hover:shadow-xl transition-all"
+              >
+                <Plus className="h-5 w-5" />
+                Add Testimonial
+              </motion.button>
+            </div>
           </motion.div>
 
           {/* Stats Cards */}

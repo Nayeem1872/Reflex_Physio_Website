@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { X, User, Save, Star } from "lucide-react";
 import toast from "react-hot-toast";
-import { BACKEND_URL } from "@/lib/config";
+import { BACKEND_URL, getMediaUrl } from "@/lib/config";
 
 interface Testimonial {
   _id: string;
@@ -63,7 +63,7 @@ export const uploadMediaAPI = async (file: File): Promise<string> => {
   }
 
   const data = await response.json();
-  return data.mediaUrl || data.url;
+  return data.imageUrl || data.mediaUrl || data.url;
 };
 
 // API - Create testimonial
@@ -108,6 +108,8 @@ export default function TestimonialForm({
 }: TestimonialFormProps) {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [bannerPreview, setBannerPreview] = useState<string>("");
+  const [profilePreviewFailed, setProfilePreviewFailed] = useState(false);
+  const [bannerPreviewFailed, setBannerPreviewFailed] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     role: "",
@@ -139,6 +141,8 @@ export default function TestimonialForm({
       });
       setImagePreview(editingTestimonial.profileMedia);
       setBannerPreview(editingTestimonial.bannerMedia || "");
+      setProfilePreviewFailed(false);
+      setBannerPreviewFailed(false);
     } else {
       resetForm();
     }
@@ -251,6 +255,8 @@ export default function TestimonialForm({
     });
     setImagePreview("");
     setBannerPreview("");
+    setProfilePreviewFailed(false);
+    setBannerPreviewFailed(false);
   };
 
   const handleCancel = () => {
@@ -288,26 +294,32 @@ export default function TestimonialForm({
             <div className="flex items-center gap-4">
               {imagePreview && (
                 <div className="relative w-16 h-16 rounded-full overflow-hidden">
-                  {formData.mediaType === "video" ? (
+                  {profilePreviewFailed ? (
+                    <div className="w-full h-full flex items-center justify-center text-white font-bold">
+                      {formData.fullName.charAt(0).toUpperCase() || "?"}
+                    </div>
+                  ) : formData.mediaType === "video" ? (
                     <video
                       src={
                         imagePreview.startsWith("data:")
                           ? imagePreview
-                          : `${BACKEND_URL}${imagePreview}`
+                          : getMediaUrl(imagePreview)
                       }
                       className="w-full h-full object-cover"
                       muted
+                      onError={() => setProfilePreviewFailed(true)}
                     />
                   ) : (
                     <Image
                       src={
                         imagePreview.startsWith("data:")
                           ? imagePreview
-                          : `${BACKEND_URL}${imagePreview}`
+                          : getMediaUrl(imagePreview)
                       }
                       alt="Preview"
                       fill
                       className="object-cover"
+                      onError={() => setProfilePreviewFailed(true)}
                     />
                   )}
                 </div>
@@ -334,28 +346,37 @@ export default function TestimonialForm({
             </label>
             <div className="space-y-3">
               {bannerPreview && (
-                <div className="relative w-full h-40 rounded-lg overflow-hidden border-2 border-gray-200">
-                  {formData.bannerMediaType === "video" ? (
+                <div className="relative w-full h-40 rounded-lg overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+                  {bannerPreviewFailed && (
+                    <p className="text-sm text-gray-500 px-4 text-center">
+                      Previously uploaded media file is no longer available.
+                      Upload a new one to replace it.
+                    </p>
+                  )}
+                  {!bannerPreviewFailed && formData.bannerMediaType === "video" && (
                     <video
                       src={
                         bannerPreview.startsWith("data:")
                           ? bannerPreview
-                          : `${BACKEND_URL}${bannerPreview}`
+                          : getMediaUrl(bannerPreview)
                       }
                       className="w-full h-full object-cover"
                       controls
                       muted
+                      onError={() => setBannerPreviewFailed(true)}
                     />
-                  ) : (
+                  )}
+                  {!bannerPreviewFailed && formData.bannerMediaType !== "video" && (
                     <Image
                       src={
                         bannerPreview.startsWith("data:")
                           ? bannerPreview
-                          : `${BACKEND_URL}${bannerPreview}`
+                          : getMediaUrl(bannerPreview)
                       }
                       alt="Banner Preview"
                       fill
                       className="object-cover"
+                      onError={() => setBannerPreviewFailed(true)}
                     />
                   )}
                 </div>
