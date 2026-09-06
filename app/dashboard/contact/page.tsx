@@ -39,6 +39,7 @@ export default function ContactInfoPage() {
     email: [""],
     address: [""],
     whatsapp: [""],
+    mapLink: "",
     facebook: "",
     instagram: "",
     twitter: "",
@@ -59,6 +60,7 @@ export default function ContactInfoPage() {
         email: data.email.length > 0 ? data.email : [""],
         address: data.address.length > 0 ? data.address : [""],
         whatsapp: data.whatsapp.length > 0 ? data.whatsapp : [""],
+        mapLink: data.mapLink || "",
         facebook: data.facebook || "",
         instagram: data.instagram || "",
         twitter: data.twitter || "",
@@ -87,6 +89,7 @@ export default function ContactInfoPage() {
         email: formData.email.filter((e) => e.trim() !== ""),
         address: formData.address.filter((a) => a.trim() !== ""),
         whatsapp: formData.whatsapp.filter((w) => w.trim() !== ""),
+        mapLink: formData.mapLink,
         facebook: formData.facebook,
         instagram: formData.instagram,
         twitter: formData.twitter,
@@ -328,6 +331,30 @@ export default function ContactInfoPage() {
                           </div>
                         ))}
                       </div>
+                    </div>
+
+                    {/* Google Maps Link */}
+                    <div className="mb-6">
+                      <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
+                        <MapPin className="h-4 w-4 text-green-600" />
+                        Google Maps Link
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.mapLink}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            mapLink: e.target.value,
+                          })
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2e3192] focus:border-transparent"
+                        placeholder="https://maps.app.goo.gl/..."
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        Used for the "Get Directions" button and embedded map on
+                        the site.
+                      </p>
                     </div>
 
                     {/* WhatsApp Numbers */}

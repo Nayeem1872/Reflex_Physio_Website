@@ -5,6 +5,7 @@ export interface IContactInfo extends Document {
   email: string[];
   address: string[];
   whatsapp: string[];
+  mapLink?: string;
   facebook?: string;
   instagram?: string;
   twitter?: string;
@@ -49,6 +50,10 @@ const contactInfoSchema = new Schema<IContactInfo>(
     whatsapp: {
       type: [String],
       default: []
+    },
+    mapLink: {
+      type: String,
+      trim: true
     },
     facebook: {
       type: String,

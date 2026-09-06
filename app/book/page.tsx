@@ -13,6 +13,9 @@ import {
   ChevronRight,
   Loader2,
   Activity,
+  MapPin,
+  Navigation,
+  Phone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -1022,6 +1025,101 @@ export default function BookingPage() {
                 {contactInfo?.phone[0] || "01684522924"}
               </a>
             </p>
+          </div>
+
+          {/* Find Us / Google Maps Section */}
+          <div className="mt-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="text-center mb-10"
+            >
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                Find Us on the Map
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Visit our clinic at Uttara — we're easy to reach and happy to
+                help you on your recovery journey.
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-8 items-stretch">
+              {/* Info Card */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-[#2e3192]/10 flex items-center justify-center">
+                    <MapPin className="h-6 w-6 text-[#2e3192]" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">
+                      Reflex Physiotherapy & Rehab Center
+                    </h3>
+                    <p className="text-sm text-gray-500">Uttara, Dhaka</p>
+                  </div>
+                </div>
+
+                {contactInfo?.address && contactInfo.address.length > 0 && (
+                  <div className="space-y-3 text-gray-600 mb-8">
+                    {contactInfo.address.map((addr, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5 text-[#2e3192]" />
+                        <span className="whitespace-pre-line">{addr}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {contactInfo?.phone && contactInfo.phone.length > 0 && (
+                  <div className="flex items-center gap-3 text-gray-600 mb-8">
+                    <Phone className="h-5 w-5 flex-shrink-0 text-[#2e3192]" />
+                    <a
+                      href={`tel:${contactInfo.phone[0]}`}
+                      className="hover:text-[#2e3192] transition-colors"
+                    >
+                      {contactInfo.phone[0]}
+                    </a>
+                  </div>
+                )}
+
+                {contactInfo?.mapLink && (
+                  <a
+                    href={contactInfo.mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#2e3192] hover:bg-[#252a7a] text-white font-semibold shadow-lg shadow-[#2e3192]/30 transition-all hover:translate-y-[-2px]"
+                  >
+                    <Navigation className="h-5 w-5" />
+                    Get Directions
+                  </a>
+                )}
+              </motion.div>
+
+              {/* Embedded Map */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="rounded-3xl overflow-hidden shadow-xl border border-gray-100 min-h-[320px]"
+              >
+                <iframe
+                  title="Reflex Physiotherapy & Rehab Center location on Google Maps"
+                  src="https://maps.google.com/maps?q=23.8719731,90.3841249&z=17&output=embed"
+                  className="w-full h-full min-h-[320px] border-0"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>

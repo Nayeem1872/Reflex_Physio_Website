@@ -7,6 +7,7 @@ export interface ContactInfo {
   email: string[];
   address: string[];
   whatsapp: string[];
+  mapLink?: string;
   facebook?: string;
   instagram?: string;
   twitter?: string;
@@ -21,6 +22,7 @@ export interface ContactInfoPayload {
   email: string[];
   address: string[];
   whatsapp: string[];
+  mapLink?: string;
   facebook?: string;
   instagram?: string;
   twitter?: string;

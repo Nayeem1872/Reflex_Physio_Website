@@ -2,7 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
+import { Phone, Mail, MapPin, Navigation, Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
 import { useContactInfo } from "../hooks/useContactInfo";
 
 const Footer = () => {
@@ -168,6 +168,20 @@ const Footer = () => {
                         <span className="text-sm">{addr}</span>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {contactInfo?.mapLink && (
+                  <div className="pt-1">
+                    <a
+                      href={contactInfo.mapLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
+                    >
+                      <Navigation className="h-4 w-4" />
+                      Get Directions
+                    </a>
                   </div>
                 )}
               </div>
