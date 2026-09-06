@@ -485,9 +485,9 @@
 
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Award,
@@ -515,7 +515,14 @@ interface HeroSectionProps {
 }
 
 const PHONE = "+880 1684-522924";
-const HERO_IMAGE = "/images/pic2.jpg";
+
+// Free Pexels stock photos (physiotherapy / rehab themed)
+const HERO_IMAGES = [
+  "https://images.pexels.com/photos/20860579/pexels-photo-20860579.jpeg?auto=compress&cs=tinysrgb&w=1600",
+  "https://images.pexels.com/photos/20860610/pexels-photo-20860610.jpeg?auto=compress&cs=tinysrgb&w=1600",
+  "https://images.pexels.com/photos/6111616/pexels-photo-6111616.jpeg?auto=compress&cs=tinysrgb&w=1600",
+  "https://images.pexels.com/photos/6094086/pexels-photo-6094086.jpeg?auto=compress&cs=tinysrgb&w=1600",
+];
 
 const features = [
   {
@@ -536,6 +543,15 @@ const features = [
 ];
 
 const HeroSection = (_props: HeroSectionProps) => {
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlide((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-[#fbfbff]">
       {/* Soft background decoration */}
@@ -643,21 +659,42 @@ const HeroSection = (_props: HeroSectionProps) => {
             {/* Purple glow behind image */}
             <div className="absolute -inset-8 -z-10 rounded-[44px] bg-[#6c4cff]/10 blur-3xl" />
 
-            {/* Main image card */}
+            {/* Main image card - auto-rotating slider */}
             <div className="relative aspect-[1.20/1] overflow-hidden rounded-[36px] border-[5px] border-white bg-white shadow-[0_30px_80px_rgba(50,35,120,0.16)] sm:aspect-[1.32/1] lg:aspect-[1.32/1]">
-              <Image
-                src={HERO_IMAGE}
-                alt="Physiotherapist helping a patient during rehabilitation"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                className="object-cover"
-              />
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={slide}
+                  src={HERO_IMAGES[slide]}
+                  alt="Physiotherapist helping a patient during rehabilitation"
+                  initial={{ opacity: 0, scale: 1.06 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </AnimatePresence>
 
               <div className="absolute inset-0 bg-gradient-to-t from-[#17113b]/20 via-transparent to-transparent" />
 
               {/* Bottom visual accent */}
               <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#17113b]/25 to-transparent" />
+
+              {/* Slider dots */}
+              <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
+                {HERO_IMAGES.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setSlide(i)}
+                    aria-label={`Show image ${i + 1}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      i === slide
+                        ? "w-6 bg-white shadow"
+                        : "w-2 bg-white/50 hover:bg-white/80"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Happy patients card */}
@@ -726,7 +763,7 @@ const HeroSection = (_props: HeroSectionProps) => {
             </motion.div>
 
             {/* Decorative marker */}
-            <div className="absolute -right-5 bottom-[25%] hidden rotate-[-4deg] text-right lg:block">
+            <div className="absolute -right-10 bottom-[25%] hidden rotate-[-4deg] text-right lg:block xl:-right-14">
               <p className="font-medium italic leading-5 text-[#7050d8]">
                 A healthier,
                 <br />

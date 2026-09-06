@@ -234,7 +234,7 @@ export default function ReflexPhysiotherapyWebsite() {
       <TestimonialSection testimonials={testimonials} isLoading={isLoading} />
 
       {/* Contact Section */}
-      <ContactSection />
+      {/* <ContactSection /> */}
 
       {/* Footer */}
       <Footer />
