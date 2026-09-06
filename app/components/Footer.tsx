@@ -95,7 +95,7 @@ const Footer = () => {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1440px] px-5 pt-10 sm:px-8 lg:px-12 xl:px-16">
+      <div className="relative z-10 w-full px-5 pt-10 sm:px-8 lg:px-12 xl:px-16">
         {/* CTA BANNER */}
         <motion.div
           initial={{ opacity: 0, y: 22 }}
